@@ -40,6 +40,9 @@ ENV NEXTAUTH_URL=$NEXTAUTH_URL
 ENV BACKEND_DOMAIN=$BACKEND_DOMAIN
 
 # Build using turbo
+RUN echo "Checking env vars..." && \
+    echo "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}" && \
+    echo "NEXTAUTH_URL=${NEXTAUTH_URL}"
 RUN pnpm turbo build --filter=mikrotik-box
 
 # Production image, copy all the files and run next
