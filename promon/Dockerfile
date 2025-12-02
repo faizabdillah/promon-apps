@@ -10,10 +10,9 @@ RUN npm install -g pnpm@10.24.0
 
 # Copy root workspace config
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
-COPY apps/package.json ./apps/package.json
 
 # Copy app package.json
-COPY apps/promon/package.json ./apps/promon/package.json
+COPY promon/package.json ./promon/package.json
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -22,7 +21,7 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/promon/node_modules ./apps/promon/node_modules
+COPY --from=deps /app/promon/node_modules ./promon/node_modules
 COPY . .
 
 # Install pnpm in builder too
@@ -45,11 +44,11 @@ ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/promon/public ./apps/promon/public
+COPY --from=builder /app/promon/public ./promon/public
 
 # Automatically leverage output traces to reduce image size
-COPY --from=builder --chown=nextjs:nodejs /app/apps/promon/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/promon/.next/static ./apps/promon/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/promon/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/promon/.next/static ./promon/.next/static
 
 USER nextjs
 
@@ -57,4 +56,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-CMD ["node", "apps/promon/server.js"]
+CMD ["node", "promon/server.js"]

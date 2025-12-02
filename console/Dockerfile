@@ -10,10 +10,9 @@ RUN npm install -g pnpm@10.24.0
 
 # Copy root workspace config
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
-COPY apps/package.json ./apps/package.json
 
 # Copy app package.json
-COPY apps/console/package.json ./apps/console/package.json
+COPY console/package.json ./console/package.json
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -22,10 +21,10 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/console/node_modules ./apps/console/node_modules
+COPY --from=deps /app/console/node_modules ./console/node_modules
 COPY . .
 
-# Install pnpm in builder too (needed for turbo)
+# Install pnpm in builder too
 RUN npm install -g pnpm@10.24.0
 
 ARG GOOGLE_CLIENT_ID
@@ -54,15 +53,15 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy public folder
-COPY --from=builder /app/apps/console/public ./apps/console/public
+COPY --from=builder /app/console/public ./console/public
 
 # Set the correct permission for prerender cache
-RUN mkdir -p apps/console/.next
-RUN chown nextjs:nodejs apps/console/.next
+RUN mkdir -p console/.next
+RUN chown nextjs:nodejs console/.next
 
 # Automatically leverage output traces to reduce image size
-COPY --from=builder --chown=nextjs:nodejs /app/apps/console/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/console/.next/static ./apps/console/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/console/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/console/.next/static ./console/.next/static
 
 USER nextjs
 
@@ -71,4 +70,4 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["node", "apps/console/server.js"]
+CMD ["node", "console/server.js"]
