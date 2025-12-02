@@ -27,8 +27,8 @@ COPY . .
 # Install pnpm in builder too
 RUN npm install -g pnpm@10.24.0
 
-ARG BACKEND_DOMAIN
-ARG SSL
+ARG BACKEND_DOMAIN=placeholder
+ARG SSL=true
 ENV BACKEND_DOMAIN=$BACKEND_DOMAIN
 ENV SSL=$SSL
 
