@@ -1,11 +1,10 @@
-"use server"
+"use client"
 
 import { useState, useEffect } from "react"
 import { useFormState, useFormStatus } from "react-dom"
 import { updateInstance, extendInstance, deleteInstance, blockIp, unblockIp, getAccessLogs, getBlockedIps, State } from "../actions"
 import { Button, Card, Input, Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui"
 import { Server, Lock, Globe, AlertTriangle, ArrowRight, CheckCircle2, Clock, Tag, Shield, Activity, Ban, Trash2, RefreshCw, MapPin } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
 
 const initialState: State = {
     error: undefined,
