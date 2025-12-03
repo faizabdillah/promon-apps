@@ -25,7 +25,7 @@ export function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInp
 
 export function Card({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
     return (
-        <div className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props}>
+        <div className={`rounded-lg border border-white/5 bg-card text-card-foreground shadow-sm ${className}`} {...props}>
             {children}
         </div>
     )

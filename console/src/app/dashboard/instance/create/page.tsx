@@ -204,7 +204,7 @@ export default function CreateInstancePage() {
                                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                     </button>
                                 </div>
-                                <p className="text-xs text-zinc-600">Password for the 'admin' user on your Mikrotik instance.</p>
+                                <p className="text-xs text-zinc-600">Password to login to the instance.</p>
                             </div>
 
                             <div className="space-y-4">
