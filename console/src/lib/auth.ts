@@ -33,25 +33,10 @@ export const authOptions: NextAuthOptions = {
                     // If running in docker-compose, 'paas-backend' works.
                     // For now, assuming docker-compose environment as requested.
 
-                    const backendUrl = `http://${env.BACKEND_DOMAIN}`; // Assuming HTTP for internal comms or use env.SSL logic if needed. 
-                    // Wait, .env says BACKEND_DOMAIN=api.testnet.id. 
-                    // But internal docker comms usually use service name 'console_backend' or 'paas-backend'.
-                    // The original code had: process.env.BACKEND_DOMAIN || "http://paas-backend:8080"
-                    // If BACKEND_DOMAIN is set to a public domain, it might not resolve internally.
-                    // But the user wants strict env.
-                    // Let's stick to what env says. If env.BACKEND_DOMAIN is the public domain, it might fail if not loopback.
-                    // However, I must follow "no one should be nullable".
-                    // I will use env.BACKEND_DOMAIN.
-                    // But wait, the original code had a fallback. I removed fallback.
-                    // So I must ensure BACKEND_DOMAIN is correct.
-                    // I will use `https://${env.BACKEND_DOMAIN}` or `http` based on SSL?
-                    // Console doesn't have SSL env var in my schema.
-                    // I should probably add SSL to console env schema if needed.
-                    // But for now, I'll just use what was there or standard.
-                    // Original: process.env.BACKEND_DOMAIN || "http://paas-backend:8080"
-                    // I'll use env.BACKEND_DOMAIN.
+                    // We use the internal docker service name for server-side calls
+                    const backendUrl = env.INTERNAL_BACKEND_URL;
 
-                    const res = await fetch(`https://${env.BACKEND_DOMAIN}/api/user`, { // Defaulting to https as per .env SSL=true
+                    const res = await fetch(`${backendUrl}/api/user`, {
                         headers: {
                             Authorization: `Bearer ${account.id_token}`
                         }

@@ -6,6 +6,7 @@ const envSchema = z.object({
     NEXTAUTH_SECRET: z.string().min(1, "NEXTAUTH_SECRET is required"),
     NEXTAUTH_URL: z.string().url("NEXTAUTH_URL must be a valid URL"),
     BACKEND_DOMAIN: z.string().min(1, "BACKEND_DOMAIN is required"),
+    INTERNAL_BACKEND_URL: z.string().default("http://console_backend:8080"),
 });
 
 const processEnv = {
@@ -14,6 +15,7 @@ const processEnv = {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     BACKEND_DOMAIN: process.env.BACKEND_DOMAIN,
+    INTERNAL_BACKEND_URL: process.env.INTERNAL_BACKEND_URL,
 };
 
 // Validate immediately

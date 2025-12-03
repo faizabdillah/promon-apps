@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { Button, Card } from "@/components/ui"
-import { getToken, logout, API_URL } from "@/lib/auth"
+import { getToken, logout } from "@/lib/auth"
+import { getDevicesAction, deleteDeviceAction } from "../actions"
 import { useRouter } from "next/navigation"
 import { Plus, Trash2, Monitor, LogOut } from "lucide-react"
 
@@ -29,16 +30,18 @@ export default function Dashboard() {
 
     const fetchDevices = async (token: string) => {
         try {
-            const res = await fetch(`${API_URL}/instance/device`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            // Explicit auth check is already done in useEffect via getToken()
+            // But we also handle the response from the server action
+            const data = await getDevicesAction(token)
+
+            if (data.error) {
+                if (data.error === 'Unauthorized') {
+                    logout()
+                } else {
+                    console.error(data.error)
                 }
-            })
-            if (res.ok) {
-                const data = await res.json()
-                setDevices(data)
             } else {
-                if (res.status === 403) logout()
+                setDevices(data)
             }
         } catch (e) {
             console.error(e)
@@ -49,19 +52,19 @@ export default function Dashboard() {
 
     const handleDelete = async (id: string) => {
         const token = getToken()
-        if (!token) return
+        if (!token) {
+            router.push('/login')
+            return
+        }
 
         if (!confirm('Are you sure?')) return
 
         try {
-            const res = await fetch(`${API_URL}/instance/device/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            if (res.ok) {
+            const res = await deleteDeviceAction(id, token)
+            if (res.success) {
                 fetchDevices(token)
+            } else {
+                console.error(res.error)
             }
         } catch (e) {
             console.error(e)

@@ -2,30 +2,21 @@
 
 
 
-import { env } from '../env';
-
-const protocol = env.SSL === 'true' ? 'https' : 'http';
-export const API_URL = `${protocol}://${env.BACKEND_DOMAIN}`; // Console Backend URL
+import { loginAction } from '../app/actions';
 
 export async function login(username: string, password: string): Promise<{ token: string } | { error: string }> {
-    try {
-        const res = await fetch(`${API_URL}/instance/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
+    // We need to use FormData for the server action
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
 
-        const data = await res.json();
-        if (res.ok) {
-            localStorage.setItem('promon_token', data.token);
-            return { token: data.token };
-        } else {
-            return { error: data.error || 'Login failed' };
-        }
-    } catch (e) {
-        return { error: 'Network error' };
+    const result = await loginAction(formData);
+
+    if (result.token) {
+        localStorage.setItem('promon_token', result.token);
+        return { token: result.token };
+    } else {
+        return { error: result.error || 'Login failed' };
     }
 }
 
