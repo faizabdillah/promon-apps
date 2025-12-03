@@ -145,7 +145,7 @@ export default function InstanceList({ instances }: { instances: Instance[] }) {
                     ))}
                 </div>
             ) : (
-                <div className="rounded-lg border border-white/5 overflow-hidden bg-zinc-900/40">
+                <div className="rounded-lg border border-white/5 bg-zinc-900/40">
                     <table className="w-full text-left text-sm">
                         <thead className="bg-zinc-900/60 text-zinc-400 font-medium uppercase text-xs tracking-wider">
                             <tr>
